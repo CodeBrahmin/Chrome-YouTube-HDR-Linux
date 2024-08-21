@@ -6,7 +6,7 @@ A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
 ## Installation
 
 1. Install MPV from your package manager
-2. Ensure MPV can play HDR by default, use [this tutorial](https://www.reddit.com/r/linux/comments/1e7vljy/intel_now_supports_laptop_hdr_on_linux/)
+2. Ensure MPV can play HDR by default, use [this tutorial](https://www.reddit.com/r/linux/comments/1e7vljy/intel_now_supports_laptop_hdr_on_linux/).
    If right clicking a HDR file in the file manager and choosing "Open with MPV" results in your face being bathed in light, success!
 3. Install yt-dlp through your package manager or [GitHub](https://github.com/yt-dlp/yt-dlp/wiki/Installation)
 4. Download our code and run the server:
