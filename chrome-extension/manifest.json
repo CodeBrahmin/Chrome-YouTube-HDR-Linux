@@ -1,0 +1,42 @@
+{
+  "name": "Play YouTube HDR with MPV",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "description": "Detects if video playing on Youtube has HDR available and gives open to play in external MPV player which supports HDR in Linux",
+  "icons": {
+    "128": "mpv-logo.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["*.png"],
+      "matches": ["https://*.youtube.com/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["https://*.youtube.com/*"]
+    }
+  ],
+  "action": {
+    "default_icon": "mpv-logo.png",
+    "default_title": "Play with MPV"
+  },
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "permissions": ["tabs", "scripting", "storage", "activeTab", "contextMenus"],
+  "host_permissions": ["http://localhost/*"],
+  "commands": {
+    "launch": {
+      "suggested_key": {
+        "default": "Ctrl+Space"
+      },
+      "description": "Play with MPV"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}
