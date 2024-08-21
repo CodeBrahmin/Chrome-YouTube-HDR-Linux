@@ -1,4 +1,4 @@
-# "Play YouTube HDR with MPV
+# Play YouTube HDR with MPV
 
 Since Chrome on Linux does not yet support HDR, this extension and python server will allow you to play YouTube HDR videos with MPV instead, which does support HDR.  
 A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
