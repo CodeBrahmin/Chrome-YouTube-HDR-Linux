@@ -25,7 +25,14 @@
   "background": {
     "service_worker": "service_worker.js"
   },
-  "permissions": ["tabs", "scripting", "storage", "activeTab", "contextMenus"],
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage",
+    "activeTab",
+    "contextMenus",
+    "alarms"
+  ],
   "host_permissions": ["http://localhost/*"],
   "commands": {
     "launch": {

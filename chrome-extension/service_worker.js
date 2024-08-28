@@ -1,3 +1,21 @@
+// this will keep SW alive for 5min then chrome will kill it, to prevent this kill we will run alarm every 4min
+// we run setInterval every 20s to prevent SW sleep in the first minute
+setInterval(() => {
+  self.serviceWorker.postMessage("test");
+  console.log("postMessage every 20 seconds to keep service worker alive");
+}, 20000);
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create("keepAlive", { periodInMinutes: 4 });
+});
+
+chrome.alarms.onAlarm.addListener((info) => {
+  if (info.name === "keepAlive") {
+    self.serviceWorker.postMessage("test");
+    console.log("++++++++++++alarm every 4 min");
+  }
+});
+
 // Show on all pages
 /*chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   chrome.action.show(tabId);
