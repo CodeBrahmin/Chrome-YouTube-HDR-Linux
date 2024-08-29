@@ -15,14 +15,23 @@ A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
    ```
 5. Download our code and run the server:
    `fastapi run --port=7531 /path_to_the_folder/play_with_mpv.py`
-   I would recommend you make the server autostart on system startup by:
+
+   I would recommend you make the server autostart on system startup by using systemd:
+   `systemctl edit --full --force --user play-with-mpv`
+   Paste the following - computer will log you out immediately you save the file so that it reloads, since it is a user service
 
    ```
-   - On KDE, I achieved this by Autostart -> Add -> Add Application -> Choose the play_with_mpv.py file
-   - Then I go to the properties of the entry, and select my home folder as Work Path, without this step the AutoStart will error out and won't work
-   - Then modify the Program entry to be:
-    `Program -> python
-    `Arguments -> /home/username/.local/bin/fastapi run --port=7531 /path_to_the_folder/play_with_mpv.py`
+   [Unit]
+   Description=Play With MPV
+   PartOf=graphical-session.target
+   After=graphical-session.target
+
+   [Service]
+   Type=simple
+   ExecStart=python /home/username/.local/bin/fastapi run --port=7531 /path_to_the_folder/play_with_mpv.py
+
+   [Install]
+   WantedBy=graphical-session.target
    ```
 
 6. Install oauth2 plugin with this
