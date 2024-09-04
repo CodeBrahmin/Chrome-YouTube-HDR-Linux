@@ -35,7 +35,7 @@ A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
    ```
 
    Enable the service
-   `systemctl enable --user --now play-with-mpv`
+   `sudo systemctl enable --now play-with-mpv`
 
 6. Install oauth2 plugin with this
    `python3 -m pip install -U https://github.com/coletdjnz/yt-dlp-youtube-oauth2/archive/refs/heads/master.zip --break-system-packages`
