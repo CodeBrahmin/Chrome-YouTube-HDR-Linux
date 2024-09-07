@@ -28,6 +28,7 @@ A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
 
    [Service]
    Type=simple
+   User=<your username>
    ExecStart=python /home/username/.local/bin/fastapi run --port=7531 /path_to_the_folder/play_with_mpv.py
 
    [Install]
