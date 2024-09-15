@@ -8,6 +8,7 @@ import json
 import re
 import os
 from typing import Union
+import threading
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -21,9 +22,11 @@ async def read_items(check_if_hdr_url: str | None = None, play_url: str | None =
         urls = check_if_hdr_url
         try:
             
-            pipe = subprocess.Popen(['yt-dlp', urls, '-J'] , stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            output = pipe.stdout.read()
+            #pipe = subprocess.Popen(['yt-dlp', urls, '-J'] , stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            pipe = subprocess.run(['yt-dlp', urls, '-J'] , stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60)
+        
+            output = pipe.stdout
+            
         
             if ("\"dynamic_range\": \"HDR10\"" in output.decode()):
                 print("Video has HDR")
@@ -31,6 +34,7 @@ async def read_items(check_if_hdr_url: str | None = None, play_url: str | None =
             else:
                 print("Video is SDR")
                 results = {"type": "hdr_check_result", "url": urls, "dynamic_range": "SDR"}
+
 
         except FileNotFoundError as e:
             missing_bin('mpv')
