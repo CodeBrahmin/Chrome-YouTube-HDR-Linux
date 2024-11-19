@@ -22,6 +22,13 @@ chrome.alarms.onAlarm.addListener((info) => {
 });
 */
 
+async function getYouTubeVideoData(url) {
+  const response = await fetch(url);
+  const html = await response.text();
+  const ytInitialPlayerResponse = JSON.parse(html.split('ytInitialPlayerResponse = ')[1].split(`;var meta = document.createElement('meta')`)[0]);
+  return ytInitialPlayerResponse;
+}
+
 // Send current tabs url to MPV server
 async function checkIfURLHasHDR(url) {
   chrome.storage.sync.get(
@@ -40,13 +47,21 @@ async function checkIfURLHasHDR(url) {
       if (opts.maxheight) {
         opts.mpv_args.splice(0, 0, ``);
       }
-      const query = `?check_if_hdr_url=` + url;
+      
+      await getYouTubeVideoData(url)
+      let data = await getYouTubeVideoData(url)
 
-      const response = await fetch(`${opts.server_url}/${query}`, {
-        method: "GET",
-      });
+      let result;
 
-      const result = await response.json();
+      console.log(data)
+
+      if (data.streamingData.adaptiveFormats.some((format) => format.qualityLabel.includes("HDR"))){
+        
+        result = {"type": "hdr_check_result", "url": url, "dynamic_range": "HDR10"}
+      }
+      else{
+        result = {"type": "hdr_check_result", "url": url, "dynamic_range": "SDR"}
+      }
 
       chrome.tabs.query({ url: "https://*.youtube.com/*" }, function (tabs) {
         tabs.forEach((tab) =>
