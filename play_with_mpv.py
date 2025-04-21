@@ -15,6 +15,88 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 
 
+
+@app.get("/")
+async def read_item(check_if_hdr_url: str | None = None, play_url: str | None = None, cast_url: str | None = None, fairuse_url: str | None = None, mpv_args: list | None = None, ytdl_args: list | None = None, location: str | None = '~/Downloads/'):
+
+    results = {}
+    if check_if_hdr_url:
+        urls = check_if_hdr_url
+        try:
+
+            #pipe = subprocess.Popen(['yt-dlp', urls, '-J'] , stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            pipe = subprocess.run(['yt-dlp', urls, '-J'] , stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60)
+
+            output = pipe.stdout
+
+
+            if ("\"dynamic_range\": \"HDR10\"" in output.decode()):
+                print("Video has HDR")
+                results = {"type": "hdr_check_result", "url": urls, "dynamic_range": "HDR10"}
+            else:
+                print("Video is SDR")
+                results = {"type": "hdr_check_result", "url": urls, "dynamic_range": "SDR"}
+
+
+        except FileNotFoundError as e:
+            missing_bin('mpv')
+
+    elif play_url:
+            urls = play_url
+            if urls.startswith('magnet:') or urls.endswith('.torrent'):
+                try:
+                    pipe = subprocess.Popen(['peerflix', '-k',  urls, '--', '--force-window'] + (mpv_args if isinstance(mpv_args, list) else []))
+                except FileNotFoundError as e:
+                    missing_bin('peerflix')
+            else:
+                try:
+
+                    pipe = subprocess.Popen(['mpv', urls, '--force-window'] + (mpv_args if isinstance(mpv_args, list) else []))
+
+                except FileNotFoundError as e:
+                    missing_bin('mpv')
+            results = {"status": "playing..."}
+    elif cast_url:
+        urls = cast_url
+        if urls.startswith('magnet:') or urls.endswith('.torrent'):
+            print(" === WARNING: Casting torrents not yet fully supported!")
+            try:
+                with subprocess.Popen(['mkchromecast', '--video',
+                            '--source-url', 'http://localhost:8888']):
+                    pass
+            except FileNotFoundError as e:
+                missing_bin('mkchromecast')
+            pipe.terminate()
+        else:
+            try:
+                pipe = subprocess.Popen(['mkchromecast', '--video', '-y', urls])
+            except FileNotFoundError as e:
+                missing_bin('mkchromecast')
+        results = {"status": "casting..."}
+
+    elif fairuse_url:
+        urls = fairuse_url
+        if "%" not in location:
+            location += "%(title)s.%(ext)s"
+        print("downloading ", urls, "to", location)
+        if urls.startswith('magnet:') or urls.endswith('.torrent'):
+            msg = " === ERROR: Downloading torrents not yet supported!"
+            print(msg)
+            raise HTTPException(status_code=404, detail=msg)
+        else:
+            try:
+                pipe = subprocess.Popen(['youtube-dl', urls, '-o', location] +
+                                ytdl_args)
+            except FileNotFoundError as e:
+                missing_bin('youtube-dl')
+            results = {"status": "downloading..."}
+    else:
+        raise HTTPException(status_code=404)
+
+
+    return JSONResponse(content=results)
+
+"""
 @app.get("/")
 async def read_items(check_if_hdr_url: str | None = None, play_url: str | None = None, cast_url: str | None = None, fairuse_url: str | None = None, mpv_args: list | None = [], ytdl_args: list | None = [], location: str | None = '~/Downloads/'):
     results = {}
@@ -98,6 +180,27 @@ def missing_bin(bin):
     print("======================")
     print(f"ERROR: {bin.upper()} does not appear to be installed correctly! please ensure you can launch '{bin}' in the terminal.")
     print("======================")
+
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 """
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler, CompatibilityMixin):
