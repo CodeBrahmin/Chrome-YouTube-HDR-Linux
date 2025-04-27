@@ -4,16 +4,16 @@ Since Chrome on Linux does not yet support HDR, this extension and python server
 A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
 
 ## Installation
-
-1. Install MPV from your package manager
-2. Ensure MPV can play HDR by default, use [this tutorial](https://www.reddit.com/r/linux/comments/1e7vljy/intel_now_supports_laptop_hdr_on_linux/).
+1. Install the extension. Chrome -> Extensions -> Load Unpacked -> Select the "chrome-extension" folder
+2. Install MPV from your package manager
+3. Ensure MPV can play HDR by default, use [this tutorial](https://www.reddit.com/r/linux/comments/1e7vljy/intel_now_supports_laptop_hdr_on_linux/).
    If right clicking a HDR file in the file manager and choosing "Open with MPV" results in your face being bathed in light, success!
-3. Install yt-dlp through your package manager or [GitHub](https://github.com/yt-dlp/yt-dlp/wiki/Installation)
-4. Install fastapi
+4. Install yt-dlp through your package manager or [GitHub](https://github.com/yt-dlp/yt-dlp/wiki/Installation)
+5. Install fastapi
    ```
    pip install "fastapi[standard]" --break-system-packages
    ```
-5. Download our code and run the server:
+6. Download our code and run the server:
    `fastapi run --port=7531 /path_to_the_folder/play_with_mpv.py`
 
    I would recommend you make the server autostart on system startup by using systemd:
@@ -38,14 +38,14 @@ A fork of [Play with MPV](https://github.com/Thann/play-with-mpv)
    Enable the service
    `systemctl --user enable --now play-with-mpv`
 
-6. Install oauth2 plugin with this
+7. Install oauth2 plugin with this
    `python3 -m pip install -U https://github.com/coletdjnz/yt-dlp-youtube-oauth2/archive/refs/heads/master.zip --break-system-packages`
    This plugin will supposedly reduce the error frequency when trying to fetch video metadata. Probably placebo.
    #place the following in ~/yt-dlp.conf
    `--username oauth2 --password ''`
-7. Test some random youtube URL so as to get auth credentials. The link will show up as YouTube TV, that's intentional
+8. Test some random youtube URL so as to get auth credentials. The link will show up as YouTube TV, that's intentional
    `yt-dlp "some_random_youtube_video_link_here" --verbose`
-8. ...profit 🤷🏼
+9. ...profit 🤷🏼
 
 ## Usage
 
